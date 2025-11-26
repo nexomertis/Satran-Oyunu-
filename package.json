@@ -1,0 +1,57 @@
+{
+  "name": "fantasy-chess-3d",
+  "version": "1.0.0",
+  "description": "3D Fantasy Chess Game",
+  "author": "Mert Yılmaz",
+  "type": "module",
+  "main": "electron.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.fantasy-chess.app",
+    "productName": "Fantastik Satranç",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron.cjs",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.92.0",
+    "@react-three/fiber": "^8.15.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.2",
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.0.0",
+    "wait-on": "^7.2.0"
+  }
+}

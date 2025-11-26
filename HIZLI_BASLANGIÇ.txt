@@ -1,0 +1,98 @@
+╔══════════════════════════════════════════════════════════════╗
+║          ⚔️  FANTASTİK SATRANÇ - HIZLI BAŞLANGIÇ  ⚔️          ║
+║                    Orklar vs Elfler                          ║
+╚══════════════════════════════════════════════════════════════╝
+
+📦 OYUNU ÇALIŞTIRMA (3 ADIM)
+═══════════════════════════════════════════════════════════════
+
+1️⃣  Komut satırını aç (CMD veya PowerShell)
+
+2️⃣  Şu komutları çalıştır:
+    npm install
+    npm run dev
+
+3️⃣  Tarayıcıda aç: http://localhost:5173
+
+✅ Hazır! Oyun başlasın!
+
+
+🎮 OYUN MODLARI
+═══════════════════════════════════════════════════════════════
+
+🤖 AI Modları:
+   • 3D AI - Detaylı modeller ile yapay zekaya karşı
+   • 2D AI - Klasik taşlar ile yapay zekaya karşı
+
+👥 İki Kişilik:
+   • 3D İki Kişilik - Detaylı modeller ile arkadaşınla
+   • 2D İki Kişilik - Klasik taşlar ile arkadaşınla
+
+
+🕹️  KONTROLLER
+═══════════════════════════════════════════════════════════════
+
+🖱️  Fare:
+   • Sol Tık → Taş seç / Hamle yap
+   • Sürükle → Kamerayı döndür
+   • Tekerlek → Yakınlaş / Uzaklaş
+
+🎯 Oyun:
+   1. Taşa tıkla
+   2. Yeşil noktaya tıkla
+   3. Hamle yapıldı!
+
+
+📦 EXE DOSYASI OLUŞTURMA
+═══════════════════════════════════════════════════════════════
+
+Masaüstü uygulaması istiyorsan:
+
+1️⃣  npm install
+2️⃣  npm run dist
+3️⃣  release klasöründeki EXE'yi çalıştır
+
+⚠️  Not: EXE oluşturma 5-10 dakika sürebilir
+
+
+📁 DOSYALAR
+═══════════════════════════════════════════════════════════════
+
+📖 README.md                 → Detaylı açıklama
+🏗️  BUILD_INSTRUCTIONS.md    → Build talimatları
+📚 KULLANIM_KILAVUZU.md      → Kullanım kılavuzu
+⚡ HIZLI_BASLANGIÇ.txt       → Bu dosya
+
+
+🎯 HIZLI İPUÇLARI
+═══════════════════════════════════════════════════════════════
+
+✅ Merkezi kontrol et (e4, d4, e5, d5)
+✅ Taşlarını erken geliştir
+✅ Şahını koru
+✅ Piyonları gereksiz kaybetme
+✅ AI'ya karşı sabırlı ol
+
+
+🔧 SORUN GİDERME
+═══════════════════════════════════════════════════════════════
+
+❌ Oyun açılmıyor?
+   → npm install çalıştır
+   → Port 5173 boş mu kontrol et
+
+❌ Yavaş çalışıyor?
+   → 2D modu dene
+   → Tarayıcı sekmelerini kapat
+
+❌ Hamle yapamıyorum?
+   → Sıra sende mi kontrol et
+   → Yeşil nokta var mı bak
+
+
+🎉 İYİ OYUNLAR!
+═══════════════════════════════════════════════════════════════
+
+Elfler ve Orklar arasındaki epik savaşta başarılar! ⚔️🧝👹
+
+Detaylı bilgi için: KULLANIM_KILAVUZU.md
