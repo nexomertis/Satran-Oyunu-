@@ -9,18 +9,35 @@ import { initializeBoard, getValidMoves, getAIMove, isCheckmate, isStalemate } f
 import { getTheme } from './utils/boardThemes'
 
 function App() {
-  const [gameMode, setGameMode] = useState(null) // null, 'ai', 'pvp', 'ai-2d', 'pvp-2d'
+  // Oyun modu state'i
+  const [gameMode, setGameMode] = useState(null)
+  
+  // Satranç tahtası
   const [board, setBoard] = useState(initializeBoard())
+  
+  // Seçili taş
   const [selectedPiece, setSelectedPiece] = useState(null)
+  
+  // Kimin sırası
   const [currentTurn, setCurrentTurn] = useState('white')
+  
+  // Yenilen taşlar
   const [capturedPieces, setCapturedPieces] = useState({ white: [], black: [] })
+  
+  // Kazanan
   const [winner, setWinner] = useState(null)
+  
+  // AI düşünüyor mu
   const [isAIThinking, setIsAIThinking] = useState(false)
+  
+  // Hamle geçmişi
   const [moveHistory, setMoveHistory] = useState([])
+  
+  // Tahta teması
   const [boardTheme, setBoardTheme] = useState('classic')
   
-  // Süre sistemi
-  const [timeMode, setTimeMode] = useState(null) // null, '1m', '3m', '5m', '10m'
+  // Zaman modu
+  const [timeMode, setTimeMode] = useState(null)
   const [whiteTime, setWhiteTime] = useState(null)
   const [blackTime, setBlackTime] = useState(null)
   const [isTimerRunning, setIsTimerRunning] = useState(false)

@@ -1,155 +1,279 @@
+// Satranç tahtasını başlangıç pozisyonunda oluştur
 export function initializeBoard() {
-  return [
-    [
-      { type: 'rook', color: 'black' },
-      { type: 'knight', color: 'black' },
-      { type: 'bishop', color: 'black' },
-      { type: 'queen', color: 'black' },
-      { type: 'king', color: 'black' },
-      { type: 'bishop', color: 'black' },
-      { type: 'knight', color: 'black' },
-      { type: 'rook', color: 'black' }
-    ],
-    Array(8).fill(null).map(() => ({ type: 'pawn', color: 'black' })),
-    Array(8).fill(null),
-    Array(8).fill(null),
-    Array(8).fill(null),
-    Array(8).fill(null),
-    Array(8).fill(null).map(() => ({ type: 'pawn', color: 'white' })),
-    [
-      { type: 'rook', color: 'white' },
-      { type: 'knight', color: 'white' },
-      { type: 'bishop', color: 'white' },
-      { type: 'queen', color: 'white' },
-      { type: 'king', color: 'white' },
-      { type: 'bishop', color: 'white' },
-      { type: 'knight', color: 'white' },
-      { type: 'rook', color: 'white' }
-    ]
+  // Boş bir tahta oluştur
+  const board = []
+  
+  // Siyah taşlar (üst sıra)
+  board[0] = [
+    { type: 'rook', color: 'black' },
+    { type: 'knight', color: 'black' },
+    { type: 'bishop', color: 'black' },
+    { type: 'queen', color: 'black' },
+    { type: 'king', color: 'black' },
+    { type: 'bishop', color: 'black' },
+    { type: 'knight', color: 'black' },
+    { type: 'rook', color: 'black' }
   ]
-}
-
-// Şah kontrolü - belirli bir rengin şahı tehdit altında mı?
-function isKingInCheck(board, color) {
-  // Şahın pozisyonunu bul
-  let kingPos = null
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const piece = board[r][c]
-      if (piece && piece.type === 'king' && piece.color === color) {
-        kingPos = { row: r, col: c }
-        break
-      }
-    }
-    if (kingPos) break
+  
+  // Siyah piyonlar
+  board[1] = []
+  for (let i = 0; i < 8; i++) {
+    board[1][i] = { type: 'pawn', color: 'black' }
   }
   
-  if (!kingPos) return false
+  // Boş kareler
+  for (let i = 2; i < 6; i++) {
+    board[i] = []
+    for (let j = 0; j < 8; j++) {
+      board[i][j] = null
+    }
+  }
   
-  // Rakip taşların şahı tehdit edip etmediğini kontrol et
-  const opponentColor = color === 'white' ? 'black' : 'white'
+  // Beyaz piyonlar
+  board[6] = []
+  for (let i = 0; i < 8; i++) {
+    board[6][i] = { type: 'pawn', color: 'white' }
+  }
   
+  // Beyaz taşlar (alt sıra)
+  board[7] = [
+    { type: 'rook', color: 'white' },
+    { type: 'knight', color: 'white' },
+    { type: 'bishop', color: 'white' },
+    { type: 'queen', color: 'white' },
+    { type: 'king', color: 'white' },
+    { type: 'bishop', color: 'white' },
+    { type: 'knight', color: 'white' },
+    { type: 'rook', color: 'white' }
+  ]
+  
+  return board
+}
+
+// Şah kontrolü yapan fonksiyon
+// Verilen renkteki şah tehdit altında mı diye bakar
+function isKingInCheck(board, color) {
+  // Önce şahı bul
+  let kingRow = -1
+  let kingCol = -1
+  let found = false
+  
+  // Tahtayı tara ve şahı bul
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const piece = board[r][c]
-      if (piece && piece.color === opponentColor) {
+      if (piece != null) {
+        if (piece.type === 'king' && piece.color === color) {
+          kingRow = r
+          kingCol = c
+          found = true
+          break
+        }
+      }
+    }
+    if (found === true) {
+      break
+    }
+  }
+  
+  // Şah bulunamadıysa false döndür
+  if (found === false) {
+    return false
+  }
+  
+  // Rakip rengi belirle
+  let opponentColor = 'white'
+  if (color === 'white') {
+    opponentColor = 'black'
+  }
+  
+  // Rakip taşları kontrol et
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c]
+      if (piece != null && piece.color === opponentColor) {
+        // Bu taşın yapabileceği hamleleri al
         const moves = getPossibleMoves(board, r, c)
-        if (moves.some(m => m.row === kingPos.row && m.col === kingPos.col)) {
-          return true
+        // Şahın pozisyonuna gidebiliyor mu?
+        for (let i = 0; i < moves.length; i++) {
+          if (moves[i].row === kingRow && moves[i].col === kingCol) {
+            return true // Şah tehdit altında!
+          }
         }
       }
     }
   }
   
-  return false
+  return false // Şah güvende
 }
 
-// Hamleden sonra şah kontrolü yapmadan olası hamleleri al
+// Bir taşın yapabileceği tüm hamleleri hesapla
+// (Şah kontrolü yapmadan, sadece taş kurallarına göre)
 function getPossibleMoves(board, row, col) {
   const piece = board[row][col]
-  if (!piece) return []
   
+  // Boş kare ise hamle yok
+  if (piece == null) {
+    return []
+  }
+  
+  // Hamleleri tutacak dizi
   const moves = []
   
+  // Tek bir kareye hamle ekle
   const addMove = (r, c) => {
+    // Tahta sınırları içinde mi?
     if (r >= 0 && r < 8 && c >= 0 && c < 8) {
       const target = board[r][c]
-      if (!target || target.color !== piece.color) {
+      // Boş kare veya rakip taş ise ekle
+      if (target == null || target.color !== piece.color) {
         moves.push({ row: r, col: c })
       }
     }
   }
   
+  // Çizgi boyunca hamle ekle (kale, fil, vezir için)
   const addLineMoves = (directions) => {
-    directions.forEach(([dr, dc]) => {
+    // Her yön için
+    for (let d = 0; d < directions.length; d++) {
+      const dir = directions[d]
+      const dr = dir[0]
+      const dc = dir[1]
+      
       let r = row + dr
       let c = col + dc
+      
+      // Tahta sınırına veya başka taşa çarpana kadar git
       while (r >= 0 && r < 8 && c >= 0 && c < 8) {
         const target = board[r][c]
-        if (!target) {
+        
+        if (target == null) {
+          // Boş kare, ekle ve devam et
           moves.push({ row: r, col: c })
         } else {
+          // Taş var
           if (target.color !== piece.color) {
+            // Rakip taş, ekle ama dur
             moves.push({ row: r, col: c })
           }
-          break
+          break // Taşa çarptık, bu yönde dur
         }
-        r += dr
-        c += dc
+        
+        r = r + dr
+        c = c + dc
       }
-    })
+    }
   }
   
-  switch (piece.type) {
-    case 'pawn':
-      const direction = piece.color === 'white' ? -1 : 1
-      const startRow = piece.color === 'white' ? 6 : 1
-      
-      // İleri hareket
-      if (row + direction >= 0 && row + direction < 8) {
-        if (!board[row + direction]?.[col]) {
-          moves.push({ row: row + direction, col })
-          // İlk hamle 2 kare
-          if (row === startRow && !board[row + 2 * direction]?.[col]) {
-            moves.push({ row: row + 2 * direction, col })
+  // Taş tipine göre hamleleri hesapla
+  if (piece.type === 'pawn') {
+    // Piyon hareketi
+    let direction = 1 // Siyah için aşağı
+    if (piece.color === 'white') {
+      direction = -1 // Beyaz için yukarı
+    }
+    
+    let startRow = 1 // Siyah başlangıç
+    if (piece.color === 'white') {
+      startRow = 6 // Beyaz başlangıç
+    }
+    
+    // Bir kare ileri
+    const newRow = row + direction
+    if (newRow >= 0 && newRow < 8) {
+      const frontPiece = board[newRow][col]
+      if (frontPiece == null) {
+        moves.push({ row: newRow, col: col })
+        
+        // İlk hamlede iki kare ileri
+        if (row === startRow) {
+          const twoStepsRow = row + (direction * 2)
+          const twoStepsPiece = board[twoStepsRow][col]
+          if (twoStepsPiece == null) {
+            moves.push({ row: twoStepsRow, col: col })
           }
         }
       }
-      
-      // Çapraz yeme
-      [-1, 1].forEach(dc => {
-        if (row + direction >= 0 && row + direction < 8 && col + dc >= 0 && col + dc < 8) {
-          const target = board[row + direction]?.[col + dc]
-          if (target && target.color !== piece.color) {
-            moves.push({ row: row + direction, col: col + dc })
-          }
-        }
-      })
-      break
-      
-    case 'rook':
-      addLineMoves([[0,1], [0,-1], [1,0], [-1,0]])
-      break
-      
-    case 'knight':
-      [[2,1], [2,-1], [-2,1], [-2,-1], [1,2], [1,-2], [-1,2], [-1,-2]].forEach(([dr, dc]) => {
-        addMove(row + dr, col + dc)
-      })
-      break
-      
-    case 'bishop':
-      addLineMoves([[1,1], [1,-1], [-1,1], [-1,-1]])
-      break
-      
-    case 'queen':
-      addLineMoves([[0,1], [0,-1], [1,0], [-1,0], [1,1], [1,-1], [-1,1], [-1,-1]])
-      break
-      
-    case 'king':
-      [[0,1], [0,-1], [1,0], [-1,0], [1,1], [1,-1], [-1,1], [-1,-1]].forEach(([dr, dc]) => {
-        addMove(row + dr, col + dc)
-      })
-      break
+    }
+    
+    // Çapraz yeme (sağ)
+    const rightCol = col + 1
+    if (newRow >= 0 && newRow < 8 && rightCol >= 0 && rightCol < 8) {
+      const rightPiece = board[newRow][rightCol]
+      if (rightPiece != null && rightPiece.color !== piece.color) {
+        moves.push({ row: newRow, col: rightCol })
+      }
+    }
+    
+    // Çapraz yeme (sol)
+    const leftCol = col - 1
+    if (newRow >= 0 && newRow < 8 && leftCol >= 0 && leftCol < 8) {
+      const leftPiece = board[newRow][leftCol]
+      if (leftPiece != null && leftPiece.color !== piece.color) {
+        moves.push({ row: newRow, col: leftCol })
+      }
+    }
+  }
+  
+  else if (piece.type === 'rook') {
+    // Kale hareketi - düz çizgiler
+    const directions = [
+      [0, 1],   // Sağa
+      [0, -1],  // Sola
+      [1, 0],   // Aşağı
+      [-1, 0]   // Yukarı
+    ]
+    addLineMoves(directions)
+  }
+  
+  else if (piece.type === 'knight') {
+    // At hareketi - L şeklinde
+    const knightMoves = [
+      [2, 1], [2, -1],   // 2 aşağı, 1 sağ/sol
+      [-2, 1], [-2, -1], // 2 yukarı, 1 sağ/sol
+      [1, 2], [1, -2],   // 1 aşağı, 2 sağ/sol
+      [-1, 2], [-1, -2]  // 1 yukarı, 2 sağ/sol
+    ]
+    
+    for (let i = 0; i < knightMoves.length; i++) {
+      const move = knightMoves[i]
+      addMove(row + move[0], col + move[1])
+    }
+  }
+  
+  else if (piece.type === 'bishop') {
+    // Fil hareketi - çapraz
+    const directions = [
+      [1, 1],    // Sağ aşağı
+      [1, -1],   // Sol aşağı
+      [-1, 1],   // Sağ yukarı
+      [-1, -1]   // Sol yukarı
+    ]
+    addLineMoves(directions)
+  }
+  
+  else if (piece.type === 'queen') {
+    // Vezir hareketi - her yöne
+    const directions = [
+      [0, 1], [0, -1], [1, 0], [-1, 0],     // Düz
+      [1, 1], [1, -1], [-1, 1], [-1, -1]    // Çapraz
+    ]
+    addLineMoves(directions)
+  }
+  
+  else if (piece.type === 'king') {
+    // Şah hareketi - her yöne 1 kare
+    const kingMoves = [
+      [0, 1], [0, -1],   // Sağ, sol
+      [1, 0], [-1, 0],   // Aşağı, yukarı
+      [1, 1], [1, -1],   // Çapraz aşağı
+      [-1, 1], [-1, -1]  // Çapraz yukarı
+    ]
+    
+    for (let i = 0; i < kingMoves.length; i++) {
+      const move = kingMoves[i]
+      addMove(row + move[0], col + move[1])
+    }
   }
   
   return moves
